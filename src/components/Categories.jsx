@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import { categories } from "../dummyData";
 import { Link } from "react-router-dom";
 
-// import { GetAllCategories } from "../Redux/apiCalls/CategoryApiCalls";
+import { GetAllCategories } from "../Redux/apiCalls/CategoryApiCalls";
 
 import { useDispatch , useSelector } from "react-redux";
 
@@ -10,6 +10,10 @@ const Categories = () => {
 
   const dispatch = useDispatch();
   const { allCategories } = useSelector(state => state.category);
+
+  useEffect(()=>{
+    dispatch(GetAllCategories());
+  },[ allCategories?.length ]);
 
   return (
     <div className="sticky top-[75px] w-full h-[0%] md:p-[10px] rounded-xl hidden xl:block">

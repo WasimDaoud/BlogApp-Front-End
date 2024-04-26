@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BsPencilSquare } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
@@ -75,7 +75,7 @@ const Comment = (props) => {
         {/* Date */}
         <div className="text-green text-[15px] md:text-[18px]">
           <Moment fromNow ago>
-            <p>{props.comment.createdAt}</p>
+            {props.comment.createdAt}
           </Moment>{" "}
           ago
         </div>

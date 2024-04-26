@@ -3,18 +3,25 @@ import React from "react";
 import { toast } from "react-toastify";
 
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { ResetPasswordApiReq } from "../Redux/apiCalls/AuthApiCalls";
 
 const ForgotPassWord = () => {
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState("");
 
-  const emptyFieldss = [] ;
+  const emptyFieldss = [];
 
   const Submitting = async (e) => {
     e.preventDefault();
     if (!email) {
       toast.error("Email field is required");
     }
-    console.log(email);
+    dispatch(ResetPasswordApiReq(email));
+    toast.success(
+      "Please check your email to complete your reset password process "
+    );
     setEmail(" ");
   };
 

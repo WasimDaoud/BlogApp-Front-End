@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 import { useState } from "react";
@@ -8,17 +8,58 @@ import { VscCommentDiscussion } from "react-icons/vsc";
 import { TbCategory2 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  CreateCategory,
+  GetAllCategories,
+} from "../Redux/apiCalls/CategoryApiCalls";
+import { categoryActions } from "../Redux/Slices.js/CategorySlice";
+import { GetAllUsers } from "../Redux/apiCalls/UserApiCalls";
+import { GetAllComments } from "../Redux/apiCalls/CommentApiCalls";
+import { GetAllPosts } from "../Redux/apiCalls/PostsApiCalls";
+
 const DashBoardMain = () => {
-  const [category, setCategory] = useState("");
+  const dispatch = useDispatch();
+  const {
+    allCategories,
+    categoryIsDeleted,
+    categoryIsUpdated,
+    categoryIsCreated,
+  } = useSelector((state) => state.category);
+
+  const [title, setTitle] = useState("");
+
+  const { users } = useSelector((state) => state.user);
+  const { posts } = useSelector((state) => state.posts);
+  const { allComments } = useSelector((state) => state.comment);
 
   const AddCategorySubmitHandler = (e) => {
     e.preventDefault();
-    if (!category) {
+    if (!title) {
       toast.error("title field is required");
     }
-    console.log(category);
-    setCategory("");
+    dispatch(CreateCategory({ title }));
+    dispatch(categoryActions.setCategoryIsCreated(true));
+    setTitle("");
+    toast.success("Category has been created successfully");
   };
+
+  useEffect(() => {
+    dispatch(GetAllUsers());
+    dispatch(GetAllPosts());
+    dispatch(GetAllCategories());
+    dispatch(GetAllComments());
+    dispatch(categoryActions.setCategoryIsCreated(false));
+  }, [
+    categoryIsCreated,
+    categoryIsUpdated,
+    categoryIsDeleted.allCategories?.length,
+    users?.length,
+    posts?.length,
+    allComments?.length,
+    allCategories?.length,
+  ]);
 
   return (
     <div className="w-full pt-[30px]">
@@ -30,7 +71,7 @@ const DashBoardMain = () => {
             <strong className="text-[25px] text-gray-dark dark:text-gray">
               Users
             </strong>
-            <h2 className="text-red text-[20px] font-bold">120</h2>
+            <h2 className="text-red text-[20px] font-bold">{users?.length}</h2>
             <div className="flex justify-between items-center">
               <Link to="/dashboard/users-table">
                 <button className="text-white text-[20px] hover:scale-105 duration-500 rounded-xl px-[15px] dark:text-[gray-dark] bg-green">
@@ -49,7 +90,7 @@ const DashBoardMain = () => {
             <strong className="text-[25px] text-gray-dark dark:text-gray">
               Posts
             </strong>
-            <h2 className="text-red text-[20px] font-bold">210</h2>
+            <h2 className="text-red text-[20px] font-bold">{posts?.length}</h2>
             <div className="flex justify-between items-center">
               <Link to="/dashboard/posts-table">
                 <button className="text-white text-[20px] hover:scale-105 duration-500 rounded-xl px-[15px] dark:text-[gray-dark] bg-green">
@@ -69,7 +110,9 @@ const DashBoardMain = () => {
             <strong className="text-[25px] text-gray-dark dark:text-gray">
               Categories
             </strong>
-            <h2 className="text-red text-[20px] font-bold">120</h2>
+            <h2 className="text-red text-[20px] font-bold">
+              {allCategories?.length}
+            </h2>
             <div className="flex justify-between items-center">
               <Link to="/dashboard/categories-table">
                 <button className="text-white text-[20px] hover:scale-105 duration-500 rounded-xl px-[10px] dark:text-[gray-dark] bg-green">
@@ -89,7 +132,9 @@ const DashBoardMain = () => {
             <strong className="text-[25px] text-gray-dark dark:text-gray">
               Comments
             </strong>
-            <h2 className="text-red text-[20px] font-bold">120</h2>
+            <h2 className="text-red text-[20px] font-bold">
+              {allComments?.length}
+            </h2>
             <div className="flex justify-between items-center">
               <Link to="/dashboard/comments-table">
                 <button className="text-white text-[20px] hover:scale-105 duration-500 rounded-xl px-[10px] dark:text-[gray-dark] bg-green">
@@ -119,9 +164,9 @@ const DashBoardMain = () => {
               </label>
               <input
                 type="text"
-                value={category}
+                value={title}
                 onChange={(e) => {
-                  setCategory(e.target.value);
+                  setTitle(e.target.value);
                 }}
                 className="mb-[20px] outline-none w-[100%] rounded-lg px-[15px] py-[5px] "
                 placeholder="category title"

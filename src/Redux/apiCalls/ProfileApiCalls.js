@@ -8,7 +8,7 @@ import { userActions } from "../Slices.js/UserSlice";
 export function GetProfileUser(profileId) {
   return async (dispatch) => {
     try {
-      const { data } =await request.get(`/api/users/profile/${profileId}`);
+      const { data } = await request.get(`/api/users/profile/${profileId}`);
       dispatch(profileActions.getProfile(data));
     } catch (error) {
       toast.error(error);
@@ -17,42 +17,48 @@ export function GetProfileUser(profileId) {
 }
 
 // Upload-Profile-Photo
-export function UploadProfilePhoto(newPhoto){
-  return async (dispatch , getState) =>{
+export function UploadProfilePhoto(newPhoto) {
+  return async (dispatch, getState) => {
     try {
-
-      const { data } = await request.post(`/api/users/profile/upload-profile-image`, newPhoto ,{
-        headers : {
-          Authorization : "Bearer " + getState().auth.user.token ,
-          "Content-Type" : "multipart/form-data"
+      const { data } = await request.post(
+        `/api/users/profile/upload-profile-image`,
+        newPhoto,
+        {
+          headers: {
+            Authorization: "Bearer " + getState().auth.user.token,
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
 
       dispatch(profileActions.uploadPhoto(data.profilePhoto));
-      dispatch(authActions.setProfilePhoto(data.profilePhoto))
+      dispatch(authActions.setProfilePhoto(data.profilePhoto));
       toast.success(data.message);
       // modify user photo in local storage
       const user = JSON.parse(localStorage.getItem("user"));
       user.user.profilePhoto = data?.profilePhoto;
-      localStorage.setItem("user",JSON.stringify(user));
-
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
       toast.error(error.response.data);
     }
-  }
+  };
 }
 
 // Update-Profile
-export function UpdateProfileCall( profileId , Profile ){
-  return async ( dispatch , getState )=>{
+export function UpdateProfileCall(profileId, Profile) {
+  return async (dispatch, getState) => {
     try {
-      const { data } = await request.put(`/api/users/profile/${profileId}`, Profile , {
-        headers : {
-          Authorization : "Bearer "+ getState().auth.user.token,
+      const { data } = await request.put(
+        `/api/users/profile/${profileId}`,
+        Profile,
+        {
+          headers: {
+            Authorization: "Bearer " + getState().auth.user.token,
+          },
         }
-      });
-      if ( !data ) {
-        throw new Error(data)
+      );
+      if (!data) {
+        throw new Error(data);
       }
       // console.log(data);
       dispatch(profileActions.updateProfile(data));
@@ -60,29 +66,27 @@ export function UpdateProfileCall( profileId , Profile ){
 
       // modify local-Storage
       const user = JSON.parse(localStorage.getItem("user"));
-      user.user.userName = data?.user?.userName ;
-      localStorage.setItem("user",JSON.stringify(user));
-
+      user.user.userName = data?.user?.userName;
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 }
 
 // Delete-Profile
-export function DeleteProfile( profileId ){
-  return async ( dispatch , getState )=>{
+export function DeleteProfile(profileId) {
+  return async (dispatch, getState) => {
     try {
-      dispatch(userActions.setProfileIsDeleted(false))
-      await request.delete(`api/users/profile/${profileId}` , {
-        headers : {
-          Authorization : "Bearer "+ getState().auth.user.token,
-        }
+      dispatch(userActions.setProfileIsDeleted(false));
+      await request.delete(`api/users/profile/${profileId}`, {
+        headers: {
+          Authorization: "Bearer " + getState().auth.user.token,
+        },
       });
-      dispatch(userActions.setProfileIsDeleted(true))
-      
+      dispatch(userActions.setProfileIsDeleted(true));
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 }

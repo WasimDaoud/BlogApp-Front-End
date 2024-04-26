@@ -6,12 +6,18 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import Home2 from "../../src/pages/Home2";
 import Profile from "../pages/Profile";
-import Register from "../pages/Register";
-import Login from "../pages/Login";
 import Details from "../pages/Details";
 import Posts from "../pages/Posts";
 import Footer from "../components/Footer";
 import Category from "../pages/Category";
+import CreatePost from "../components/CreatePost";
+
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import ResetPassWord from "../pages/ResetPassWord";
+import NotFound from "../pages/NotFound";
+import VerifyEmail from "../pages/VerifyEmail";
+import ForgotPassWord from "../pages/ForgotPassWord";
 
 import DashBoard from "../pages/DashBoard";
 import UsersTable from "../components/UsersTable";
@@ -19,12 +25,7 @@ import PostsTable from "../components/PostsTable";
 import CommentsTable from "../components/CommentsTable";
 import CategoriesTable from "../components/CategoriesTable";
 
-import CreatePost from "../components/CreatePost";
 
-import ForgotPassWord from "../pages/ForgotPassWord";
-import ResetPassWord from "../pages/ResetPassWord";
-
-import NotFound from "../pages/NotFound";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.auth);
@@ -33,21 +34,27 @@ const Layout = ({ children }) => {
       <ToastContainer position="top-center" />
       <Navbar />
       <Routes>
-
         {/* Home */}
         <Route path="/" element={<Home2 />}></Route>
+        <Route path="/BlogApp-Front-End" element={<Home2 />}></Route>
 
-        {/* Auth */}
+        {/* Auth */}BlogApp-Front-End
         <Route
           path="/login"
           element={user?.user ? <Navigate to="/" /> : <Login />}
         ></Route>
-        <Route path="/forgot-password" element={<ForgotPassWord />}></Route>
-        <Route path="/reset-password" element={<ResetPassWord />}></Route>
+        <Route path="/:userId/reset-password/:token" element={<ResetPassWord />}></Route>
         <Route
           path="/register"
           element={user?.user ? <Navigate to="/" /> : <Register />}
         ></Route>
+        <Route
+          path="/:userId/verify-email/:token"
+          element={user?.user ? <Navigate to="/" /> : <VerifyEmail />}
+        ></Route>
+
+        {/* Forgot-PassWord */}
+        <Route path="/forgot-password" element={<ForgotPassWord />}></Route>
 
         {/* Posts */}
         <Route path="/posts" element={<Posts />}></Route>
@@ -64,12 +71,23 @@ const Layout = ({ children }) => {
         <Route path="/category/:category" element={<Category />}></Route>
 
         {/* DashBoard */}
-        <Route path="/dashboard" element={ user?.user?.isAdmin ? <DashBoard /> : <Navigate to="/" /> }></Route>
-        <Route path="/dashboard/users-table" element={ user?.user?.isAdmin ?  <UsersTable /> : <Navigate to="/" />}></Route>
-        <Route path="/dashboard/posts-table" element={ user?.user?.isAdmin ? <PostsTable /> : <Navigate to="/" />}></Route>
+        <Route
+          path="/dashboard"
+          element={user?.user?.isAdmin ? <DashBoard /> : <Navigate to="/" />}
+        ></Route>
+        <Route
+          path="/dashboard/users-table"
+          element={user?.user?.isAdmin ? <UsersTable /> : <Navigate to="/" />}
+        ></Route>
+        <Route
+          path="/dashboard/posts-table"
+          element={user?.user?.isAdmin ? <PostsTable /> : <Navigate to="/" />}
+        ></Route>
         <Route
           path="/dashboard/comments-table"
-          element={user?.user?.isAdmin ? <CommentsTable /> : <Navigate to="/" />}
+          element={
+            user?.user?.isAdmin ? <CommentsTable /> : <Navigate to="/" />
+          }
         ></Route>
         <Route
           path="/dashboard/categories-table"

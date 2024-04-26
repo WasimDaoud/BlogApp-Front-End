@@ -5,9 +5,13 @@ import { request } from "../../utility/Axios";
 
 // GET-ALL-COMMENTS
 export function GetAllComments(){
-    return async(dispatch) => {
+    return async(dispatch,getState) => {
         try {
-            const { data } = await request.get(`api/users/comments`); 
+            const { data } = await request.get(`/api/comments/`,{
+                headers : {
+                    Authorization : `Bearer ${getState().auth?.user?.token}`
+                }
+            }); 
             if(!data){
                 toast.error("no response from server");
             }

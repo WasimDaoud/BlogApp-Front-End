@@ -2,19 +2,30 @@ import React from "react";
 
 import { toast } from "react-toastify";
 
+import { useNavigate, useParams } from "react-router-dom";
+
 import { useState } from "react";
 
-const ResetPassWord = () => {
-  const [passWord , setPassWord] = useState("");
+import { useDispatch } from "react-redux";
+import { ResetPassword } from "../Redux/apiCalls/AuthApiCalls";
 
-  const emptyFieldss = [] ;
+const ResetPassWord = () => {
+  const { userId, token } = useParams();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [passWord, setPassWord] = useState("");
+
+  const emptyFieldss = [];
 
   const Submitting = async (e) => {
     e.preventDefault();
     if (!passWord) {
       toast.error("PassWord field is required");
     }
-    console.log(passWord);
+    dispatch(ResetPassword(userId, passWord, token));
+    navigate("/login");
     setPassWord(" ");
   };
 
@@ -23,22 +34,22 @@ const ResetPassWord = () => {
       <div className="max-w-[1380px] mx-auto">
         <div className="pt-[87px] pb-[84px] lg:w-[60%] md:w-[75%] w-[90%] px-[20px] mx-auto ">
           <form className="dark:border-2 px-[50px] dark:border-blue flex flex-col rounded-xl pb-[50px] bg-white dark:bg-gray-dark">
-            <h2 className="mx-auto font-bold text-[35px] my-[20px] text-blue">
-              Reset PassWord
+            <h2 className="mx-auto font-bold text-[22px]  md:text-[35px] my-[20px] text-blue">
+              Reset Password
             </h2>
-            {/* Email */}
+            {/* password */}
             <div className="flex flex-col">
               <label
                 htmlFor="password"
                 className="md:text-[20px] my-[10px] dark:text-white"
               >
-                New PassWord
+                New Password
               </label>
               <input
                 type="password"
                 name="password"
                 value={passWord}
-                placeholder="enter the email here"
+                placeholder="enter the new password here"
                 className={
                   emptyFieldss.includes("ssdv")
                     ? "mb-[15px] border-2 border-red outline-none px-[15px] py-[5px] bg-gray rounded-xl dark:bg-gray-dark-bg dark:text-white"

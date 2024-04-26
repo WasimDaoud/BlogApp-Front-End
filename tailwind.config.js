@@ -9,6 +9,7 @@ module.exports = {
 
   // for dark mod
   darkMode: "class",
+  
   // custom configs
   theme: {
     colors: {

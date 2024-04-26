@@ -30,7 +30,12 @@ const Category = () => {
             <h1 className="text-[30px] font-bold dark:text-gray text-gray-dark mb-[30px] mt-[100px]">
               not posts in this category
             </h1>
-            <Link className="text-[25px] font-bold text-center dark:text-gray text-gray-dark mb-[400px] hover:text-blue dark:hover:text-blue hover:scale-105 duration-1000 border-2 border-blue p-[10px] rounded-xl" to="/posts">See another Posts</Link>
+            <Link
+              className="text-[25px] font-bold text-center dark:text-gray text-gray-dark mb-[400px] hover:text-blue dark:hover:text-blue hover:scale-105 duration-1000 border-2 border-blue p-[10px] rounded-xl"
+              to="/posts"
+            >
+              See another Posts
+            </Link>
           </div>
         ) : !postsCat ? (
           <h1 className="flex justify-center items-center text-[30px] font-bold text-gray-dark dark:text-gray">

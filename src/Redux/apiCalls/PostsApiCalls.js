@@ -42,7 +42,6 @@ export function GetPostsByCategory(category){
       if(!data){
         throw new Error("no response from server")
       }
-      console.log(data);
       dispatch(PostsActions.getPostsCat(data));
 
     } catch (error) {
@@ -51,6 +50,24 @@ export function GetPostsByCategory(category){
     }
   }
 }
+
+// GET ALL POSTS 
+export function GetAllPosts(){
+  return async (dispatch)=>{
+    try {
+      const { data } = await request.get(`/api/posts`);
+      if(!data){
+        throw new Error("no response from server")
+      }
+      dispatch(PostsActions.getPosts(data));
+
+    } catch (error) {
+      console.log(error.response.data);
+      toast.error(error.response.data);
+    }
+  }
+}
+
 
 // GET SINGLE POSTS BY ID
 export function GetSinglePost(PostId){
@@ -89,7 +106,6 @@ export function CreateNewPost( newPost ){
 
 
     } catch (error) {
-      console.log(error.response.data);
       toast.error(error.response.data);
     }
   }

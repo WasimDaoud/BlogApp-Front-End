@@ -1,56 +1,69 @@
 import DashBoardSideBar from "../components/DashBoardSideBar";
 import DashBoardLink from "../components/DashBoardLink";
+import UpdatingCategory from "../components/UpdateCategory";
 
 import swal from "sweetalert";
 
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const people = [
-  {
-    name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
-    email: "jane.cooper@example.com",
-    image: "https://bit.ly/33HnjK0",
-  },
-  {
-    name: "John Doe",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Tester",
-    email: "john.doe@example.com",
-    image: "https://bit.ly/3I9nL2D",
-  },
-  {
-    name: "Veronica Lodge",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: " Software Engineer",
-    email: "veronica.lodge@example.com",
-    image: "https://bit.ly/3vaOTe1",
-  },
-  // More people...
-];
+import {
+  GetAllCategories,
+  DeleteCategory,
+} from "../Redux/apiCalls/CategoryApiCalls";
+import { categoryActions } from "../Redux/Slices.js/CategorySlice";
+
 const CategoriesTable = () => {
-  
-    const DeleteCategoryHandler = () => {
-      swal({
-        title: "Are you sure ?",
-        text: "Once deleted, you will not be able to recover this Category!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          swal("Your Category has been deleted successfully !", {
-            icon: "success",
-          });
-        } else {
-          swal("Your Category is safe!");
-        }
-      });
-      console.log("Category Deleted successfully");
-    };
+  const dispatch = useDispatch();
+
+  const { UpdateCategory } = useSelector((state) => state.category);
+  const { allCategories, categoryIsDeleted, categoryIsUpdated } = useSelector(
+    (state) => state.category
+  );
+
+  const [title, setTitle] = useState("");
+  const [updateModal, setUpdateModal] = useState(false);
+
+  // DELETE-CATEGORY
+  const DeleteCategoryHandler = (id) => {
+    swal({
+      title: "Are you sure ?",
+      text: "Once deleted, you will not be able to recover this Category!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(DeleteCategory(id));
+        dispatch(categoryActions.setCategoryIsDeleted(true));
+        swal("Your Category has been deleted successfully !", {
+          icon: "success",
+        });
+      } else {
+        swal("Your Category is safe!");
+      }
+    });
+  };
+
+  // updateModalHandler
+  const updateModalHandler = (category) => {
+    dispatch(categoryActions.setUpdateCategory(category));
+    setUpdateModal(true);
+    console.log("category : ", category);
+  };
+
+  useEffect(() => {
+    dispatch(GetAllCategories());
+    dispatch(categoryActions.setCategoryIsDeleted(false));
+    dispatch(categoryActions.setCategoryIsUpdated(false));
+  }, [
+    allCategories?.length,
+    categoryIsUpdated,
+    categoryIsDeleted,
+    UpdateCategory?._id,
+  ]);
+
   return (
     <div className="dark:bg-black">
       <div className="lg:hidden ">
@@ -82,6 +95,12 @@ const CategoriesTable = () => {
                     scope="col"
                     className="w-[25%] px-2 py-3 text-center text-md font-bold text-gray-dark uppercase tracking-wider"
                   >
+                    User
+                  </th>
+                  <th
+                    scope="col"
+                    className="w-[25%] px-2 py-3 text-center text-md font-bold text-gray-dark uppercase tracking-wider"
+                  >
                     Category Title
                   </th>
                   <th
@@ -94,34 +113,70 @@ const CategoriesTable = () => {
               </thead>
               {/* Body of Table */}
               <tbody className="bg-white dark:bg-gray-dark-bg divide-y divide-gray-200 w-full">
-                {people.map((person) => (
+                {allCategories?.map((category, index) => (
                   <tr
-                    className="hover:bg-blue duration-700 hover:cursor-pointer w-full"
-                    key={person.email}
+                    className="hover:bg-blue divide-x duration-700 w-full"
+                    key={category?._id}
                   >
                     {/* Count */}
                     <td className="px-2 py-4 w-[10%]">
                       <div className="flex items-center justify-center">
-                        count
+                        {index}
                       </div>
                     </td>
                     {/* User ( image & name)*/}
-                    <td className="px-2 py-4 whitespace-nowrap w-[20%]">
-                      <div className="flex items-center">
+                    <td className="px-2 py-4 whitespace-nowrap  w-[40%]">
+                      <div className="flex pl-[40px] items-center">
                         {/* user image */}
-                        <div className="flex-shrink-0 h-10 w-10">
+                        <Link
+                          to={`/profile/${category?.user?._id}`}
+                          className="flex-shrink-0 h-10 w-10"
+                        >
                           <img
                             className="h-10 w-10 rounded-full"
-                            src={person.image}
+                            src={category?.user?.profilePhoto?.url}
                             alt=""
                           />
+                        </Link>
+                        {/* user name */}
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <h2 className="text-sm ml-[15px] lg:text-lg px-2">
+                            {category?.user?.userName}
+                          </h2>
                         </div>
                       </div>
                     </td>
-                    {/* Action ( show-Profile & delete-Profile ) */}
-                    <td className="md:px-2 py-4   w-[50%] text-center">
-                      <button onClick={DeleteCategoryHandler} className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-red text-white">
-                        Delete category
+                    {/* Category title */}
+                    <td className="px-2 py-4 w-[10%]">
+                      <div className="flex items-center justify-center">
+                        {category?.title}
+                      </div>
+                    </td>
+                    {/* Action ( Update & delete Category ) */}
+                    <td className="md:px-2 py-4   w-[40%] text-center">
+                      <button
+                        onClick={() => updateModalHandler(category)} //UpdateCategoryHandler(category?._id)
+                        className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-orange text-white"
+                      >
+                        Update
+                      </button>
+                      {updateModal ? (
+                        <div className="bgModal">
+                          <div className="modal bg-gray w-[70%] lg:w-[50%] h-[35%]">
+                            <UpdatingCategory
+                              setUpdateModal={setUpdateModal}
+                              category={category}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      <button
+                        onClick={() => DeleteCategoryHandler(category?._id)}
+                        className="py-[5px] ml-[15px] px-[5px] md:px-[10px] rounded-xl bg-red text-white"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>

@@ -8,6 +8,7 @@ export const authSlice = createSlice({
       : null,
     error: null,
     registerMessage: null,
+    emailIsVerified : false
   },
   reducers: {
     login(state, action) {
@@ -27,6 +28,9 @@ export const authSlice = createSlice({
     },
     error(state, action) {
       state.error = action.payload;
+    },
+    setEmailIsVerified(state){
+      state.emailIsVerified = true ;
     }
   },
 });

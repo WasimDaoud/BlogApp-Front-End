@@ -16,12 +16,12 @@ import { commentActions } from "../Redux/Slices.js/CommentSlice";
 import { userActions } from "../Redux/Slices.js/UserSlice";
 import { authActions } from "../Redux/Slices.js/authSlice";
 
-import  swal  from "sweetalert";
+import swal from "sweetalert";
 
 const Profile = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const state = useSelector((state) => state.profile);
   const { post } = useSelector((state) => state.posts);
@@ -32,7 +32,7 @@ const Profile = () => {
     (state) => state.comment
   );
 
-  const DeleteProfileHandler = ()=>{
+  const DeleteProfileHandler = () => {
     swal({
       title: "Are you sure ?",
       text: "Once deleted, you will not be able to recover this Profile!",
@@ -52,7 +52,7 @@ const Profile = () => {
         swal("Your Profile is safe!");
       }
     });
-  }
+  };
 
   useEffect(() => {
     dispatch(GetProfileUser(params.id));
@@ -74,8 +74,11 @@ const Profile = () => {
       <HomeUserInfo user={state.user?.user} />
       <div className="max-w-[1500px] mx-auto">
         {/* latest posts */}
-        <h1 className="md:text-[40px] text-[30px] font-bold underline dark:text-gray text-gray-dark pb-[30px]">
-          {state.user?.user.userName} Posts
+        <h1 className="md:text-[40px] text-[30px] font-bold underline dark:text-gray text-gray-dark-bg pb-[30px]">
+          {localStorage.getItem("user")
+            ? JSON.parse(localStorage.getItem("user")).user.userName
+            : state.user?.user.userName}{" "}
+          posts
         </h1>
         {ProfilePosts.length === 0 ? (
           <h1 className="flex justify-center items-center text-[30px] font-bold text-gray-dark dark:text-gray">
@@ -91,11 +94,14 @@ const Profile = () => {
           <PostsList posts={ProfilePosts} />
         )}
         {user?.user?._id == state.user?.user?._id || user?.user?.isAdmin ? (
-          <button onClick={DeleteProfileHandler} className="text-[20px] md:text-[25px] py-[5px] px-[10px] duration-1000 text-red border-2 border-red hover:border-white hover:text-white hover:bg-red rounded-xl m-[25px]">
+          <button
+            onClick={DeleteProfileHandler}
+            className="text-[20px] md:text-[25px] py-[5px] px-[10px] duration-1000 text-red border-2 border-red hover:border-white hover:text-white hover:bg-red rounded-xl m-[25px]"
+          >
             Delete Profile
           </button>
         ) : (
-          <button  className="py-[5px] px-[10px] m-[25px]"></button>
+          <button className="py-[5px] px-[10px] m-[25px]"></button>
         )}
       </div>
     </div>
@@ -103,5 +109,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-

@@ -9,7 +9,9 @@ const ListOfPostComments = ({ post }) => {
       </strong>
       <div>
         {post?.comments?.map((comment) => (
-          <Comment key={comment._id} comment={comment} />
+          <>
+            <Comment key={comment._id} comment={comment} />
+          </>
         ))}
       </div>
     </div>

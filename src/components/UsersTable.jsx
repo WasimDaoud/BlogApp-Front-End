@@ -3,42 +3,26 @@ import DashBoardLink from "../components/DashBoardLink";
 
 import swal from "sweetalert" ;
 
-const people = [
-  {
-    name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
-    email: "jane.cooper@example.com",
-    image: "https://bit.ly/33HnjK0",
-  },
-  {
-    name: "John Doe",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Tester",
-    email: "john.doe@example.com",
-    image: "https://bit.ly/3I9nL2D",
-  },
-  {
-    name: "Veronica Lodge",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: " Software Engineer",
-    email: "veronica.lodge@example.com",
-    image: "https://bit.ly/3vaOTe1",
-  },
-  // More people...
-];
+import { useDispatch , useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+
+import { GetAllUsers } from "../Redux/apiCalls/UserApiCalls";
+import { DeleteProfile } from "../Redux/apiCalls/ProfileApiCalls";
+import { userActions } from "../Redux/Slices.js/UserSlice";
 
 const UsersTable = () => {
 
-  // view-Profile-Handler
-  const viewProfileHandler = () => {
-    console.log("profile viewed successfully");
-  };
+  const dispatch = useDispatch();
 
-  const DeleteUserHandler = () => {
+  const { users , profileIsDeleted } = useSelector(state => state.user);
+
+  useEffect(() => {
+    dispatch(GetAllUsers());
+    dispatch(userActions.setProfileIsDeleted(false));
+  },[ users?.length , profileIsDeleted ]);
+
+  const DeleteUserHandler = (id) => {
     swal({
       title: "Are you sure ?",
       text: "Once deleted, you will not be able to recover this Profile!",
@@ -47,6 +31,8 @@ const UsersTable = () => {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
+        dispatch(DeleteProfile(id));
+        dispatch(userActions.setProfileIsDeleted(true));
         swal("this Profile has been deleted successfully !", {
           icon: "success",
         });
@@ -54,7 +40,6 @@ const UsersTable = () => {
         swal("this Profile is safe!");
       }
     });
-    console.log("profile Deleted successfully");
   };
 
   return (
@@ -106,15 +91,15 @@ const UsersTable = () => {
               </thead>
               {/* Body of Table */}
               <tbody className="bg-white dark:bg-gray-dark-bg divide-y divide-gray-200 w-full">
-                {people.map((person) => (
+                {users?.map((user,index) => (
                   <tr
-                    className="hover:bg-blue duration-700 hover:cursor-pointer w-full"
-                    key={person.email}
+                    className="hover:bg-blue divide-x duration-700 w-full"
+                    key={user?._id}
                   >
                     {/* Count */}
                     <td className="px-2 py-4 w-[10%]">
                       <div className="flex items-center justify-center">
-                        count
+                        {index}
                       </div>
                     </td>
                     {/* User ( image & name)*/}
@@ -124,33 +109,33 @@ const UsersTable = () => {
                         <div className="flex-shrink-0 h-10 w-10">
                           <img
                             className="h-10 w-10 rounded-full"
-                            src={person.image}
-                            alt=""
+                            src={user?.profilePhoto?.url}
+                            alt="userImage"
                           />
                         </div>
-                        {/* user image */}
+                        {/* user Name */}
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {person.name}
+                            {user?.userName}
                           </div>
                         </div>
                       </div>
                     </td>
                     {/* User Email */}
                     <td className="w-[20%]">
-                      <div className="text-sm text-gray-500">
-                        {person.email}
+                      <div className="text-sm text-gray-500 px-[10px]">
+                        {user?.email}
                       </div>
                     </td>
                     {/* Action ( show-Profile & delete-Profile ) */}
                     <td className="md:px-2 py-4   w-[50%] text-center">
-                      <button
-                        onClick={viewProfileHandler}
+                      <Link
+                        to={`/profile/${user?._id}`}
                         className="py-[5px] mx-[10px] md:my-0 my-[10px] px-[5px] md:px-[10px] rounded-xl bg-green text-white"
                       >
                         View Profile
-                      </button>
-                      <button onClick={DeleteUserHandler} className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-red text-white">
+                      </Link>
+                      <button onClick={()=>DeleteUserHandler(user?._id)} className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-red text-white">
                         Delete User
                       </button>
                     </td>

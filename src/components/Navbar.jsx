@@ -16,12 +16,13 @@ import { BiMenu, BiLogIn } from "react-icons/bi";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { RiAdminFill } from "react-icons/ri";
 
-import { categories } from "../dummyData";
 
 import { useSelector, useDispatch } from "react-redux";
 import { LogOutUser } from "../Redux/apiCalls/AuthApiCalls";
 
 const Navbar = () => {
+
+  const { allCategories } = useSelector(state => state.category )
   const [menu, setMenu] = useState(false);
   const [modeIcon, setModeIcon] = useState("light");
   const [dropDown, setDropDown] = useState(false);
@@ -139,13 +140,13 @@ const Navbar = () => {
             // userName & userProfileImage
             <div className="flexBetween gap-[15px]">
               <h1 className="font-bold text-gray-dark dark:text-gray text-[20px]">
-                {user?.user?.userName}
+                {localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).user?.userName : user?.user?.userName }
               </h1>
               <div className=" cursor-pointer md:w-[45px] md:h-[45px] w-[40px] h-[40px] rounded-full relative">
                 {/* user Image */}
                 <img
                   className="w-full h-full rounded-full"
-                  src={user?.user?.profilePhoto.url}
+                  src={localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).user?.profilePhoto.url : user?.user?.profilePhoto.url }
                   alt="userImage"
                   onClick={() => setDropDown(!dropDown)}
                 />
@@ -188,9 +189,6 @@ const Navbar = () => {
               </button>
             </div>
           )}
-          {/* <div className="md:text-[20px] text-gray-dark cursor-pointer md:w-[40px] md:h-[40px] w-[35px] h-[35px] rounded-full bg-gray">
-            <span></span>
-          </div> */}
         </div>
         {/* display user menu or not */}
         {menu ? (
@@ -251,7 +249,7 @@ const Navbar = () => {
                   Categories
                 </h1>
                 <div className="flex justify-center flex-wrap gap-[10px] py-[10px]">
-                  {categories.map((item) => (
+                  {allCategories.map((item) => (
                     <div
                       key={item._id}
                       className=" md:text-[20px] px-[10px] py-[3px] rounded-xl text-gray-dark bg-white dark:hover:bg-blue dark:bg-gray-dark-text dark:text-gray-dark-i border-2 border-blue hover:bg-blue hover:border-white my-[10px] cursor-pointer duration-500"
@@ -305,7 +303,7 @@ const Navbar = () => {
                   Categories
                 </h1>
                 <div className="flex justify-center flex-wrap gap-[10px] py-[10px]">
-                  {categories.map((item) => (
+                  {allCategories?.map((item) => (
                     <div
                       key={item._id}
                       className=" md:text-[20px] px-[10px] py-[3px] rounded-xl text-gray-dark bg-white dark:hover:bg-blue dark:bg-gray-dark-text dark:text-gray-dark-i border-2 border-blue hover:bg-blue my-[10px] cursor-pointer duration-500"

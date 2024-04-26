@@ -1,4 +1,4 @@
-import { Children, useEffect } from "react";
+import { Children } from "react";
 import Layout from "./layout/Layout";
 
 function App() {

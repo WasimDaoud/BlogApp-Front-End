@@ -13,7 +13,6 @@ import { MdEditDocument } from "react-icons/md";
 import { BsFillCameraFill } from "react-icons/bs";
 
 const HomeUserInfo = (props) => {
-
   const dispatch = useDispatch();
 
   const [file, setFile] = useState(null);
@@ -22,22 +21,24 @@ const HomeUserInfo = (props) => {
   // update profile image form-submit-handler
   const UploadPhoto = (e) => {
     e.preventDefault();
-    if(!file){
-      return toast.warning("there is no photo selected")
+    if (!file) {
+      return toast.warning("there is no photo selected");
     }
     const formData = new FormData();
-    formData.append("image",file);
-    dispatch( UploadProfilePhoto(formData) );
+    formData.append("image", file);
+    dispatch(UploadProfilePhoto(formData));
   };
 
   return (
     <div className="w-full bg-gray dark:bg-gray-dark-bg pb-[15px] shadow-md">
       {/* profile-image */}
       <div className="flex justify-center items-center pt-[30px]">
-        <div className="rounded-full w-[300px] h-[300px] relative">
+        <div className="rounded-full w-[350px] lg:w-[400px] h-[350px] lg:h-[400px] relative">
           <img
             className="rounded-full w-full h-full"
-            src={file ? URL.createObjectURL(file) : props.user?.profilePhoto.url}
+            src={
+              file ? URL.createObjectURL(file) : props.user?.profilePhoto.url
+            }
             alt="userImage"
           />
           {/* Update profile picture Icon & Upload-btn */}
@@ -45,8 +46,8 @@ const HomeUserInfo = (props) => {
             {/* camera icon input to select photo */}
             <div>
               <label htmlFor="file">
-                <div className=" w-[60px] h-[60px] rounded-full bg-gray flex justify-center items-center">
-                  <BsFillCameraFill className="cursor-pointer text-[45px] text-black" />
+                <div className=" w-[60px] h-[60px] rounded-full bg-gray dark:bg-gray-dark-bg flex justify-center items-center">
+                  <BsFillCameraFill className="cursor-pointer text-[45px] text-orange" />
                 </div>
                 <input
                   type="file"
@@ -61,7 +62,7 @@ const HomeUserInfo = (props) => {
             <button
               type="submit"
               onClick={UploadPhoto}
-              className="text-[20px] font-bold text-blue"
+              className="text-[20px] font-bold text-orange"
             >
               Upload
             </button>
@@ -93,14 +94,14 @@ const HomeUserInfo = (props) => {
         </h1>
       </div>
       {/* user bio */}
-      <h3 className="text-center text-[20px] text-gray-dark dark:text-gray-dark-i md:text-[25px]">
+      <h3 className="text-center text-[20px] font-bold text-gray-dark dark:text-gray-dark-i">
         {props.user?.bio}
       </h3>
 
       {/* user Joined-Date */}
-      <h3 className="text-center text-[20px] text-gray-dark dark:text-gray-dark-i md:text-[25px]">
+      <h3 className="text-center text-[20px] text-gray-dark dark:text-gray-dark-i md:text-[20px]  my-[15px]">
         {`I joined Blog App At `}
-        <span className="font-bold text-green text-[20px] md:text-[25px]">
+        <span className="font-bold text-green text-[20px]">
           {new Date(props.user?.createdAt).toDateString()}
         </span>
       </h3>
@@ -111,13 +112,13 @@ const HomeUserInfo = (props) => {
           onClick={() => {
             setUpdateProfileModal(true);
           }}
-          className="text-[45px] text-blue cursor-pointer"
+          className="text-[35px] text-orange cursor-pointer"
         />
         <button
           onClick={() => {
             setUpdateProfileModal(true);
           }}
-          className="text-[20px] w-[150px] font-bold mt-[5px] text-green"
+          className="text-[20px] w-[150px] font-bold mt-[5px] text-orange"
         >
           Update Profile
         </button>

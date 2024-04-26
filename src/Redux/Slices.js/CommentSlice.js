@@ -21,8 +21,8 @@ const CommentSlice = createSlice({
       state.commentIsDeleted = action.payload;
     },
     setCommentIsUpdated(state, action) {
-        state.commentIsUpdated = action.payload;
-      },
+      state.commentIsUpdated = action.payload;
+    },
   },
 });
 

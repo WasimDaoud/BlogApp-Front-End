@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../Redux/apiCalls/PostsApiCalls";
 import { GetAllUsers } from "../Redux/apiCalls/UserApiCalls";
+import { GetAllCategories } from "../Redux/apiCalls/CategoryApiCalls";
 
 import { commentActions } from "../Redux/Slices.js/CommentSlice";
 import { userActions } from "../Redux/Slices.js/UserSlice";
@@ -33,6 +34,7 @@ const Home2 = () => {
   useEffect(() => {
     dispatch(getPosts(1));
     dispatch(GetAllUsers());
+    dispatch(GetAllCategories());
     dispatch(commentActions.setCommentIsDeleted(false));
     dispatch(commentActions.setCommentIsUpdated(false));
     dispatch(userActions.setProfileIsDeleted(false));

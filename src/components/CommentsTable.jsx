@@ -1,60 +1,51 @@
 import DashBoardSideBar from "../components/DashBoardSideBar";
 import DashBoardLink from "../components/DashBoardLink";
 
-import swal from "sweetalert" ;
+import { Link } from "react-router-dom";
 
+import swal from "sweetalert";
 
-const people = [
-  {
-    name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
-    email: "jane.cooper@example.com",
-    image: "https://bit.ly/33HnjK0",
-  },
-  {
-    name: "John Doe",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Tester",
-    email: "john.doe@example.com",
-    image: "https://bit.ly/3I9nL2D",
-  },
-  {
-    name: "Veronica Lodge",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: " Software Engineer",
-    email: "veronica.lodge@example.com",
-    image: "https://bit.ly/3vaOTe1",
-  },
-  // More people...
-];
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
+import {
+  GetAllComments,
+  DeleteComment,
+} from "../Redux/apiCalls/CommentApiCalls";
+import { commentActions } from "../Redux/Slices.js/CommentSlice";
+
 const CommentsTable = () => {
-    // view-Profile-Handler
-    const viewCommentHandler = () => {
-      console.log("profile viewed successfully");
-    };
-  
-    const DeleteCommentHandler = () => {
-      swal({
-        title: "Are you sure ?",
-        text: "Once deleted, you will not be able to recover this Comment!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((willDelete) => {
-        if (willDelete) {
-          swal("Your Comment has been deleted successfully !", {
-            icon: "success",
-          });
-        } else {
-          swal("Your Comment is safe!");
-        }
-      });
-      console.log("Comment Deleted successfully");
-    };
+  const dispatch = useDispatch();
+
+  const { allComments, commentIsDeleted } = useSelector(
+    (state) => state.comment
+  );
+
+  const DeleteCommentHandler = (id) => {
+    swal({
+      title: "Are you sure ?",
+      text: "Once deleted, you will not be able to recover this Comment!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(DeleteComment(id));
+        dispatch(commentActions.setCommentIsDeleted(true));
+        swal("Your Comment has been deleted successfully !", {
+          icon: "success",
+        });
+      } else {
+        swal("Your Comment is safe!");
+      }
+    });
+  };
+
+  useEffect(() => {
+    dispatch(GetAllComments());
+    dispatch(commentActions.setCommentIsDeleted(false));
+  }, [commentIsDeleted, allComments?.length]);
+
   return (
     <div className="dark:bg-black">
       <div className="lg:hidden ">
@@ -69,7 +60,9 @@ const CommentsTable = () => {
         {/* users-table */}
         <div className="flex flex-col mx-auto bg-gray w-full pt-[30px] lg:w-[80%] dark:bg-black  px-[10px]">
           <div className="shadow  w-full">
-          <strong className="underline dark:text-gray text-[30px]">Comments</strong>
+            <strong className="underline dark:text-gray text-[30px]">
+              Comments
+            </strong>
             <table className="w-full dark:text-gray shadow-md mt-[20px]">
               {/* Head of table */}
               <thead className="bg-blue">
@@ -90,7 +83,7 @@ const CommentsTable = () => {
                     scope="col"
                     className="w-[25%] px-2 py-3 text-center text-md font-bold text-gray-dark uppercase tracking-wider"
                   >
-                    Comment Title
+                    Comment text
                   </th>
                   <th
                     scope="col"
@@ -102,48 +95,51 @@ const CommentsTable = () => {
               </thead>
               {/* Body of Table */}
               <tbody className="bg-white dark:bg-gray-dark-bg divide-y divide-gray-200 w-full">
-                {people.map((person) => (
+                {allComments?.map((comment, index) => (
                   <tr
-                    className="hover:bg-blue duration-700 hover:cursor-pointer w-full"
-                    key={person.email}
+                    className="hover:bg-blue divide-x duration-700 w-full"
+                    key={comment?._id}
                   >
                     {/* Count */}
                     <td className="px-2 py-4 w-[10%]">
                       <div className="flex items-center justify-center">
-                        count
+                        {index}
                       </div>
                     </td>
                     {/* User ( image & name)*/}
                     <td className="px-2 py-4 whitespace-nowrap w-[20%]">
                       <div className="flex items-center">
                         {/* user image */}
-                        <div className="flex-shrink-0 h-10 w-10">
+                        <Link
+                          to={`/profile/${comment?.user?._id}`}
+                          className="flex-shrink-0 h-10 w-10 mr-[15px]"
+                        >
                           <img
                             className="h-10 w-10 rounded-full"
-                            src={person.image}
-                            alt=""
+                            src={comment?.user?.profilePhoto?.url}
+                            alt="userImage"
                           />
-                        </div>
-                        {/* user image */}
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {person.name}
-                          </div>
+                        </Link>
+                        {/* comment owner  */}
+                        <div className="text-sm lg:text-lg text-gray-500">
+                          {comment?.user?.userName}
                         </div>
                       </div>
                     </td>
-                    {/* User Email */}
+                    {/* comment text */}
                     <td className="w-[20%]">
-                      <div className="text-sm text-gray-500">
-                        {person.email}
+                      <div className="ml-4">
+                        <div className="overflow-auto text-sm font-medium text-gray-900">
+                          {`${comment?.text}`}
+                        </div>
                       </div>
                     </td>
                     {/* Action ( show-Profile & delete-Profile ) */}
                     <td className="md:px-2 py-4   w-[50%] text-center">
-                      <button onClick={viewCommentHandler} className="py-[5px] mx-[10px] md:my-0 my-[10px] px-[5px] md:px-[10px] rounded-xl bg-green text-white">
-                        View Comment
-                      </button>
-                      <button onClick={DeleteCommentHandler} className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-red text-white">
+                      <button
+                        onClick={() => DeleteCommentHandler(comment?._id)}
+                        className="py-[5px] px-[5px] md:px-[10px] rounded-xl bg-red text-white"
+                      >
                         Delete Comment
                       </button>
                     </td>

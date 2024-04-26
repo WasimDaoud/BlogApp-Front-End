@@ -24,6 +24,8 @@ import {
 } from "../Redux/apiCalls/PostsApiCalls";
 import { PostsActions } from "../Redux/Slices.js/PostSlice";
 
+import Moment from "react-moment";
+
 const Post = (props) => {
   const params = useParams();
   const idParam = params.id;
@@ -88,18 +90,10 @@ const Post = (props) => {
     <div className="w-full rounded-xl mb-[70px] bg-gray h[100vh] dark:bg-gray-dark relative shadow-md">
       {/* Post details ( post-Imag & author & user-Image & title & description & date) */}
       <div>
-        {/* post image */}
-        <div className="w-full h-[450px] flex justify-center">
-          <img
-            src={image ? URL.createObjectURL(image) : props.post?.image?.url}
-            className="dark:text-gray-dark-i w-[100%] md:w-[60%] h-[100%] rounded-xl"
-            alt="..."
-          />
-        </div>
         <div className="flexBetween p-[10px]">
           {/* image & Author */}
           <div className="flexBetween gap-[15px]">
-            <div className="w-[30px] md:w-[45px] h-[30px] md:h-[45px] rounded-full cursor-pointer hover:scale-110 duration-500">
+            <div className="w-[35px] md:w-[50px] h-[35px] md:h-[50px] rounded-full cursor-pointer hover:scale-110 duration-500">
               <Link to={`/profile/${props.post?.user?._id}`}>
                 <img
                   className="w-full h-full rounded-full"
@@ -126,21 +120,34 @@ const Post = (props) => {
           {/* date */}
           <div>
             <h1 className="text-green dark:text-green text-[15px] md:text-[20px]">
-              {new Date(props.post?.createdAt).toDateString()}
+              <Moment fromNow ago>
+                {props.post?.createdAt}
+              </Moment>
+              {` ago`}
             </h1>
           </div>
         </div>
+
+        {/* post image */}
+        <div className="w-full h-[450px] flex justify-center">
+          <img
+            src={image ? URL.createObjectURL(image) : props.post?.image?.url}
+            className="dark:text-gray-dark-i w-[100%] md:w-[60%] h-[100%] rounded-xl"
+            alt="..."
+          />
+        </div>
+
         <hr className="text-white dark:text-gray-dark-bg"></hr>
         {/* post description */}
-        <div className="w-full p-[15px]">
+        <div className="w-full p-[10px]">
           <div className="flexBetween">
             {/* description */}
-            <h2 className="dark:text-gray-dark-i text-[20px] underline">
+            <h2 className="font-bold text-orange text-[20px] underline">
               {props.post?.description}
             </h2>
             {/* category */}
             <Link to={`/category/${props.post?.category}`}>
-              <h1 className="bg-yellow border-2 border-orange dark:border-yellow dark:bg-orange dark:text-gray-dark-i text-[20px] md:text-[25px] rounded-xl px-[7px] py-[5px] text-gray-dark-text">
+              <h1 className="bg-orange border-2 border-orange dark:border-yellow dark:bg-orange dark:text-gray-dark-i text-[20px] rounded-xl px-[7px] text-yellow hover:scale-105 duration-1000">
                 {props.post?.category}
               </h1>
             </Link>
@@ -203,11 +210,10 @@ const Post = (props) => {
           )}
         </div>
       </div>
-      <hr className="mb-[15px] text-white dark:text-gray-dark-bg"></hr>
+      <hr className="mb-[10px] text-white dark:text-gray-dark-bg"></hr>
       {}
 
       {/* Icons */}
-
       <div className="flexBetween px-[15px] pb-[15px] relative">
         {/* Like */}
         <div className="flexBetween gap-[10px]">
@@ -334,7 +340,7 @@ const Post = (props) => {
                   {/* upload */}
                   <button
                     type="submit"
-                    className="text-[15px] px-[10px] bg-gray dark:bg-gray-dark-bg dark:text-gray-dark-i border-2 border-blue dark:border-blue rounded-xl hover:bg-blue hover:border-white hover:text-white hover:dark:bg-blue dark:hover:border-white duration-500"
+                    className="text-[15px] px-[10px] bg-gray dark:bg-gray-dark-bg dark:text-green border-2 border-green rounded-xl hover:bg-blue hover:border-white hover:text-white hover:dark:bg-blue dark:hover:border-white duration-500"
                   >
                     Upload
                   </button>
@@ -397,7 +403,7 @@ const Post = (props) => {
                   {/* upload */}
                   <button
                     type="submit"
-                    className="text-[15px] px-[10px] bg-gray dark:bg-gray-dark-bg dark:text-gray-dark-i border-2 border-blue dark:border-blue rounded-xl hover:bg-blue hover:border-white hover:text-white hover:dark:bg-blue dark:hover:border-white duration-500"
+                    className="text-[15px] px-[10px] bg-gray dark:bg-gray-dark-bg dark:text-green border-2 border-green rounded-xl hover:bg-blue hover:border-white hover:text-white hover:dark:bg-blue dark:hover:border-white duration-500"
                   >
                     Upload
                   </button>

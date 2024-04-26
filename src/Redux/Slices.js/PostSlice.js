@@ -47,8 +47,8 @@ export const PostSlice = createSlice({
     clearPost(state){
       state.post = null
     },
-    setPostIsDeleted(state){
-      state.postIsDeleted = true
+    setPostIsDeleted(state,action){
+      state.postIsDeleted = action.payload;
     }
   },
 });
